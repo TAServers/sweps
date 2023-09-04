@@ -1,9 +1,9 @@
-# Scripted Weapons
+# 🔫 Scripted Weapons
 
 A monorepo (or well, mono-addon) of custom scripted weapons for the Garry's Mod server.
 Contains weapons made by the community that are too small on their own to be worth turning into an addon.
 
-## Zero to Hero
+## 🦸‍♂️ Zero to Hero
 
 1. Download and install the following programs if you haven't already:
 	- Git
@@ -20,7 +20,7 @@ Contains weapons made by the community that are too small on their own to be wor
 		- See the setup guides for each extension if they're not working automatically
 4. Run the server and start working on your SWeps!
 
-## Development process
+## ⌨️ Development process
 
 1. Checkout a new branch from `master` with a descriptive name
 	- If this is a new SWep, calling your branch the same as the SWep probably makes sense
