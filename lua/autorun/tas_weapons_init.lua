@@ -1,0 +1,3 @@
+TASWeapons = {
+	Category = "TAS Weapons",
+}
