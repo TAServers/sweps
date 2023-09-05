@@ -1,5 +1,4 @@
 SWEP.PrintName = "Kilo's Combat Tool Gun" -- The name of the weapon
-    
 SWEP.Author = "Kilo"
 SWEP.Purpose = "For when circumstances exceed that of the regular tool gun."
 SWEP.Category = TASWeapons.Category
@@ -7,12 +6,10 @@ SWEP.Category = TASWeapons.Category
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
 
-
 SWEP.Base = "weapon_base"
 
 local ShootSound = Sound("weapons/airboat/airboat_gun_lastshot2.wav")
 SWEP.Primary.Damage = 20
-SWEP.Primary.TakeAmmo = 0
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Ammo = "none"
 SWEP.Primary.DefaultClip = 1
@@ -24,7 +21,6 @@ SWEP.Primary.Delay = 0.2
 SWEP.Primary.Force = 1000
 
 SWEP.Secondary.Damage = 10
-SWEP.Secondary.TakeAmmo = 0
 SWEP.Secondary.ClipSize = 1
 SWEP.Secondary.Ammo = "none"
 SWEP.Secondary.DefaultClip = 1
@@ -37,9 +33,9 @@ SWEP.Secondary.Force = 1000
 
 SWEP.Slot = 1
 SWEP.SlotPos = 0
-SWEP.DrawCrosshair = true --Does it draw the crosshair
+SWEP.DrawCrosshair = true
 SWEP.DrawAmmo = false
-SWEP.Weight = 5 --Priority when the weapon your currently holding drops
+SWEP.Weight = 5
 SWEP.AutoSwitchTo = true
 SWEP.AutoSwitchFrom = false
 
@@ -90,7 +86,6 @@ function SWEP:PrimaryAttack()
     self.Owner:FireBullets( bullet )
     self:EmitSound(ShootSound)
     self.Owner:ViewPunch( Angle( rnda,rndb,rnda ) )
-    self:TakePrimaryAmmo(self.Primary.TakeAmmo)
 
     self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
 end
@@ -118,7 +113,6 @@ function SWEP:SecondaryAttack()
     self.Owner:FireBullets( bullet )
     self:EmitSound(ShootSound)
     self.Owner:ViewPunch( Angle( rnda,rndb,rnda ) )
-    self:TakeSecondaryAmmo(self.Secondary.TakeAmmo)
 
     self:SetNextSecondaryFire( CurTime() + self.Secondary.Delay )
 end
