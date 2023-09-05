@@ -11,8 +11,8 @@ Contains weapons made by the community that are too small on their own to be wor
 		- Alternative editors will work, but might not support our tooling out the box
 	- Garry's Mod dedicated server
 	- You can use single-player for development, but many of the input-related hooks don't behave the same as on a real server
-2. Clone this repository to your local server's `garrysmod/addons` directory with `git clone https://github.com/TAServers/gmod-utils.git`
-	- Or if using SSH, `git clone git@github.com:TAServers/gmod-utils.git`
+2. Clone this repository to your local server's `garrysmod/addons` directory with `git clone https://github.com/TAServers/sweps.git`
+	- Or if using SSH, `git clone git@github.com:TAServers/sweps.git`
 3. Install the recommended VSCode extensions
 	- VSCode should prompt you when you open the project
 	- If it doesn't, see `.vscode/extensions.json`
