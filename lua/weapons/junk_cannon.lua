@@ -183,8 +183,7 @@ function SWEP:ThrowProp(force, model, mass, colour)
 end
 
 function SWEP:LoadProp(ent)
-	self.Hopper[#self.Hopper + 1] =
-		{ ent:GetModel(), ent:GetPhysicsObject():GetMass(), ent:GetColor() }
+	self.Hopper[#self.Hopper + 1] = { ent:GetModel(), ent:GetPhysicsObject():GetMass(), ent:GetColor() }
 	ent:Remove()
 
 	net.Start("JunkCannon.RegisterHopperSize")
