@@ -1,4 +1,4 @@
-SWEP.PrintName = "Kilo's Combat Tool Gun" -- The name of the weapon
+SWEP.PrintName = "Kilo's Combat Tool Gun"
 SWEP.Author = "Kilo"
 SWEP.Purpose = "For when circumstances exceed that of the regular tool gun."
 SWEP.Category = TASWeapons.Category
@@ -8,7 +8,8 @@ SWEP.AdminOnly = false
 
 SWEP.Base = "weapon_base"
 
-local ShootSound = Sound("weapons/airboat/airboat_gun_lastshot2.wav")
+SWEP.ShootSound = Sound("weapons/airboat/airboat_gun_lastshot2.wav")
+
 SWEP.Primary.Damage = 20
 SWEP.Primary.ClipSize = 1
 SWEP.Primary.Ammo = "none"
@@ -16,7 +17,7 @@ SWEP.Primary.DefaultClip = 1
 SWEP.Primary.Spread = 0
 SWEP.Primary.NumberofShots = 1
 SWEP.Primary.Automatic = true
-SWEP.Primary.Recoil = .1
+SWEP.Primary.Recoil = 0.1
 SWEP.Primary.Delay = 0.2
 SWEP.Primary.Force = 1000
 
@@ -39,89 +40,72 @@ SWEP.Weight = 5
 SWEP.AutoSwitchTo = true
 SWEP.AutoSwitchFrom = false
 
-SWEP.ViewModelFlip		= false
-SWEP.ViewModelFOV		= 60
-SWEP.ViewModel			= "models/weapons/c_toolgun.mdl"
-SWEP.WorldModel			= "models/weapons/w_toolgun.mdl"
-SWEP.UseHands           = true
+SWEP.ViewModelFlip = false
+SWEP.ViewModelFOV = 60
+SWEP.ViewModel = "models/weapons/c_toolgun.mdl"
+SWEP.WorldModel	= "models/weapons/w_toolgun.mdl"
+SWEP.UseHands = true
 
-SWEP.HoldType = "Pistol" 
+SWEP.HoldType = "Pistol"
 
 SWEP.FiresUnderwater = true
 SWEP.DrawWeaponInfoBox = false
-SWEP.ReloadSound = "weapons/airboat/airboat_gun_lastshot2.wav"
 SWEP.IconOverride = "materials/entities/gmod_tool.png"
 
 SWEP.CSMuzzleFlashes = false
 
 
 function SWEP:Initialize()
-    util.PrecacheSound(ShootSound) 
-    util.PrecacheSound(self.ReloadSound) 
-    self:SetWeaponHoldType( self.HoldType )
-end 
+    util.PrecacheSound(self.ShootSound)
+    self:SetWeaponHoldType(self.HoldType)
+end
 
+function SWEP:createBullet(fire)
+    local bullet = {}
+    bullet.Num = fire.NumberofShots
+    bullet.Src = self:GetOwner():GetShootPos()
+    bullet.Dir = self:GetOwner():GetAimVector()
+    bullet.Spread = Vector( fire.Spread * 0.1 , fire.Spread * 0.1, 0)
+    bullet.Tracer = 1
+    bullet.TracerName = "ToolTracer"
+    bullet.Force = fire.Force
+    bullet.Damage = fire.Damage
+    bullet.AmmoType = fire.Ammo
+    bullet.Distance = 1e5
+
+    bullet.RecoilPR = fire.Recoil * -1 --Recoil for Pitch & Roll
+    bullet.recoilY = fire.Recoil * math.random(-1, 1) --Recoil for Yaw
+    return bullet
+end
+
+function SWEP:attack(fire)
+    local bullet = self:createBullet(fire)
+
+    self:ShootEffects()
+
+    self:GetOwner():FireBullets(bullet)
+    self:EmitSound(self.ShootSound)
+    self:GetOwner():ViewPunch(Angle(bullet.RecoilPR, bullet.recoilY, bullet.RecoilPR))
+end
 
 function SWEP:PrimaryAttack()
 
-    if ( !self:CanPrimaryAttack() ) then return end
-        
-    local bullet = {}
-    bullet.Num = self.Primary.NumberofShots
-    bullet.Src = self.Owner:GetShootPos()
-    bullet.Dir = self.Owner:GetAimVector()
-    bullet.Spread = Vector( self.Primary.Spread * 0.1 , self.Primary.Spread * 0.1, 0)
-    bullet.Tracer = 1
-    bullet.TracerName = "ToolTracer"
-    bullet.Force = self.Primary.Force
-    bullet.Damage = self.Primary.Damage
-    bullet.AmmoType = self.Primary.Ammo
-    bullet.Distance = 100000
-        
-    local rnda = self.Primary.Recoil * -1
-    local rndb = self.Primary.Recoil * math.random(-1, 1)
-        
-    self:ShootEffects()
-        
-    self.Owner:FireBullets( bullet )
-    self:EmitSound(ShootSound)
-    self.Owner:ViewPunch( Angle( rnda,rndb,rnda ) )
+    if (not self:CanPrimaryAttack()) then return end
 
-    self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+    self:attack(self.Primary)
+
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
 
 function SWEP:SecondaryAttack()
-    if ( !self:CanSecondaryAttack() ) then return end
-        
-    local bullet = {}
-    bullet.Num = self.Secondary.NumberofShots
-    bullet.Src = self.Owner:GetShootPos()
-    bullet.Dir = self.Owner:GetAimVector()
-    bullet.Spread = Vector( self.Secondary.Spread * 0.1 , self.Secondary.Spread * 0.1, 0)
-    bullet.Tracer = 1
-    bullet.TracerName = "ToolTracer"
-    bullet.Force = self.Secondary.Force
-    bullet.Damage = self.Secondary.Damage
-    bullet.AmmoType = self.Secondary.Ammo
-    bullet.Distance = 100000
-        
-    local rnda = self.Secondary.Recoil * -1
-    local rndb = self.Secondary.Recoil * math.random(-1, 1)
-        
-    self:ShootEffects()
-        
-    self.Owner:FireBullets( bullet )
-    self:EmitSound(ShootSound)
-    self.Owner:ViewPunch( Angle( rnda,rndb,rnda ) )
+    if (not self:CanSecondaryAttack()) then return end
 
-    self:SetNextSecondaryFire( CurTime() + self.Secondary.Delay )
+    self:attack(self.Secondary)
+
+    self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end
 
-function SWEP:Reload()
-    self.Weapon:DefaultReload( ACT_VM_RELOAD );
-end
-
-if !SERVER then
-    killicon.Add( "kilos_combat_toolgun", "vgui/face/grin", Color( 255, 255, 255, 255 ) )
-    SWEP.WepSelectIcon = surface.GetTextureID( 'vgui/gmod_tool' )
+if not SERVER then
+    killicon.Add("kilos_combat_toolgun", "vgui/face/grin", Color(255, 255, 255, 255))
+    SWEP.WepSelectIcon = surface.GetTextureID("vgui/gmod_tool")
 end
