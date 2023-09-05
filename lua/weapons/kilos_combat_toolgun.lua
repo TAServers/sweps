@@ -84,13 +84,17 @@ function SWEP:attack(fire)
 end
 
 function SWEP:PrimaryAttack()
-	if not self:CanPrimaryAttack() then return end
+	if not self:CanPrimaryAttack() then
+		return
+	end
 	self:attack(self.Primary)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
 
 function SWEP:SecondaryAttack()
-	if not self:CanSecondaryAttack() then return end
+	if not self:CanSecondaryAttack() then
+		return
+	end
 	self:attack(self.Secondary)
 	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end
