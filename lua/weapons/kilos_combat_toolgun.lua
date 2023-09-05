@@ -65,7 +65,7 @@ function SWEP:createBullet(fire)
     bullet.Num = fire.NumberofShots
     bullet.Src = self:GetOwner():GetShootPos()
     bullet.Dir = self:GetOwner():GetAimVector()
-    bullet.Spread = Vector( fire.Spread * 0.1 , fire.Spread * 0.1, 0)
+    bullet.Spread = Vector(fire.Spread * 0.1 , fire.Spread * 0.1, 0)
     bullet.Tracer = 1
     bullet.TracerName = "ToolTracer"
     bullet.Force = fire.Force
