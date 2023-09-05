@@ -43,69 +43,59 @@ SWEP.AutoSwitchFrom = false
 SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 60
 SWEP.ViewModel = "models/weapons/c_toolgun.mdl"
-SWEP.WorldModel	= "models/weapons/w_toolgun.mdl"
+SWEP.WorldModel = "models/weapons/w_toolgun.mdl"
 SWEP.UseHands = true
-
 SWEP.HoldType = "Pistol"
 
 SWEP.FiresUnderwater = true
 SWEP.DrawWeaponInfoBox = false
 SWEP.IconOverride = "materials/entities/gmod_tool.png"
-
 SWEP.CSMuzzleFlashes = false
 
-
 function SWEP:Initialize()
-    util.PrecacheSound(self.ShootSound)
-    self:SetWeaponHoldType(self.HoldType)
+	util.PrecacheSound(self.ShootSound)
+	self:SetWeaponHoldType(self.HoldType)
 end
 
 function SWEP:createBullet(fire)
-    local bullet = {}
-    bullet.Num = fire.NumberofShots
-    bullet.Src = self:GetOwner():GetShootPos()
-    bullet.Dir = self:GetOwner():GetAimVector()
-    bullet.Spread = Vector(fire.Spread * 0.1 , fire.Spread * 0.1, 0)
-    bullet.Tracer = 1
-    bullet.TracerName = "ToolTracer"
-    bullet.Force = fire.Force
-    bullet.Damage = fire.Damage
-    bullet.AmmoType = fire.Ammo
-    bullet.Distance = 1e5
+	local bullet = {}
+	bullet.Num = fire.NumberofShots
+	bullet.Src = self:GetOwner():GetShootPos()
+	bullet.Dir = self:GetOwner():GetAimVector()
+	bullet.Spread = Vector(fire.Spread * 0.1, fire.Spread * 0.1, 0)
+	bullet.Tracer = 1
+	bullet.TracerName = "ToolTracer"
+	bullet.Force = fire.Force
+	bullet.Damage = fire.Damage
+	bullet.AmmoType = fire.Ammo
+	bullet.Distance = 1e5
+	bullet.RecoilPR = fire.Recoil * -1 --Recoil for Pitch & Roll
+	bullet.recoilY = fire.Recoil * math.random(-1, 1) --Recoil for Yaw
 
-    bullet.RecoilPR = fire.Recoil * -1 --Recoil for Pitch & Roll
-    bullet.recoilY = fire.Recoil * math.random(-1, 1) --Recoil for Yaw
-    return bullet
+	return bullet
 end
 
 function SWEP:attack(fire)
-    local bullet = self:createBullet(fire)
-
-    self:ShootEffects()
-
-    self:GetOwner():FireBullets(bullet)
-    self:EmitSound(self.ShootSound)
-    self:GetOwner():ViewPunch(Angle(bullet.RecoilPR, bullet.recoilY, bullet.RecoilPR))
+	local bullet = self:createBullet(fire)
+	self:ShootEffects()
+	self:GetOwner():FireBullets(bullet)
+	self:EmitSound(self.ShootSound)
+	self:GetOwner():ViewPunch(Angle(bullet.RecoilPR, bullet.recoilY, bullet.RecoilPR))
 end
 
 function SWEP:PrimaryAttack()
-
-    if (not self:CanPrimaryAttack()) then return end
-
-    self:attack(self.Primary)
-
-    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	if not self:CanPrimaryAttack() then return end
+	self:attack(self.Primary)
+	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
 
 function SWEP:SecondaryAttack()
-    if (not self:CanSecondaryAttack()) then return end
-
-    self:attack(self.Secondary)
-
-    self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+	if not self:CanSecondaryAttack() then return end
+	self:attack(self.Secondary)
+	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end
 
 if not SERVER then
-    killicon.Add("kilos_combat_toolgun", "vgui/face/grin", Color(255, 255, 255, 255))
-    SWEP.WepSelectIcon = surface.GetTextureID("vgui/gmod_tool")
+	killicon.Add("kilos_combat_toolgun", "vgui/face/grin", Color(255, 255, 255, 255))
+	SWEP.WepSelectIcon = surface.GetTextureID("vgui/gmod_tool")
 end
