@@ -44,13 +44,15 @@ SWEP.LoadSound = Sound("weapons/physcannon/physcannon_charge.wav")
 SWEP.LoadSoundDurationSecs = 1.5
 
 SWEP.PrimaryRateOfFire = 1.5 -- Per second
+
 local BURST_LIFETIME_SECS = 3
 local BURST_SPEED_UNITS = 140 -- In the direction of the burst each frame
-local BURST_EXPLOSION_RADIUS_UNITS = 190
+local BURST_EXPLOSION_RADIUS_UNITS = 290
 local BURST_PASSIVE_RADIUS_UNITS = 120 -- Used for passively pulling objects towards the burst as it's flying
 local BURST_DAMAGE_HP = 70 -- Scaled by distance from explosion center
-local BURST_TOSS_IMPULSE_MAGNITUDE = 1200 -- arbitrary units
-local BURST_PASSIVE_IMPULSE_MAGNITUDE = 180 -- arbitrary units, scaled down because it's passive
+local BURST_TOSS_IMPULSE_MAGNITUDE = 42200 -- Hammer units
+local BURST_PASSIVE_IMPULSE_MAGNITUDE = 12180 -- Hammer units, scaled down because it's passive (during flight)
+local BURST_PLAYER_FORCE_MULTIPLIER = 0.5 -- Players weigh ~170lb, 85 kg and this is as about as heavy as a small desk in hl2 which can easily be tossed around. Basically the weight scale in HL2 is weird.
 local BURST_PUNCH_ANGLE = Angle(-3, -0.6, -0.3) -- Determines how strong the punch is on each axis
 local BURST_VIEWMODEL_ANGLE = Angle(0, 0, -15) -- Determines how much the viewmodel is rotated
 
@@ -91,16 +93,17 @@ local function applyGravityToEntity(burst, entity, magnitude)
 	end
 
 	local tossDirection = (entity:GetPos() - burst.pos):GetNormalized()
-	local tossForce = -tossDirection * magnitude * entityPhysics:GetMass()
+	local tossForce = tossDirection * magnitude * entityPhysics:GetMass() * engine.TickInterval()
 	if entity:IsPlayer() then
 		-- Can't use physics methods on a player
-		-- Arbitrary 0.03 because we're setting velocity, not force
 		-- It also acts different with players, toss players away instead of inwards like for props.
-		entity:SetVelocity(-tossForce * 0.03)
+
+		-- In source, this is actually referred to as an impulse like the physics methods, so should be fine.
+		entity:SetVelocity(tossForce * BURST_PLAYER_FORCE_MULTIPLIER)
 	else
 		-- And some random angular velocity for good measure
 		entityPhysics:AddAngleVelocity(VectorRand(-50, 50))
-		entityPhysics:ApplyForceCenter(tossForce)
+		entityPhysics:ApplyForceOffset(tossForce, burst.pos)
 	end
 end
 
@@ -190,9 +193,9 @@ function SWEP:Reload()
 		end
 
 		local ammo = owner:GetAmmoCount(self.Primary.Ammo)
-
-		self:SetClip1(math.min(ammo, self.Primary.ClipSize))
-		owner:RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo)
+		local requiredAmmoCount = self.Primary.ClipSize - self:Clip1()
+		self:SetClip1(self:Clip1() + math.min(ammo, requiredAmmoCount))
+		owner:RemoveAmmo(requiredAmmoCount, self.Primary.Ammo)
 	end)
 
 	-- 0.1 is arbitrary because apparently SetClip1 doesn't update in the same tick,
