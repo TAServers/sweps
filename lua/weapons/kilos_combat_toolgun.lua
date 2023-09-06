@@ -77,7 +77,7 @@ function SWEP:attack(bulletProperties)
 	self:ShootEffects()
 	self:GetOwner():FireBullets(bullet)
 	self:EmitSound(self.ShootSound)
-	
+
 	local RecoilDirection = math.random(0, 1) --Randomly chooses either left or right for yaw recoil
 	if RecoilDirection == 0 then
 		RecoilDirection = -1
