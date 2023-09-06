@@ -110,3 +110,8 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack() end
+
+if CLIENT then
+	-- "," is the gravity gun icon
+	killicon.AddFont("grav_blaster", "HL2MPTypeDeath", ",", Color(255, 80, 0))
+end
