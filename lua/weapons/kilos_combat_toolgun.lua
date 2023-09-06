@@ -25,7 +25,7 @@ SWEP.Secondary.Damage = 10
 SWEP.Secondary.ClipSize = 1
 SWEP.Secondary.Ammo = "none"
 SWEP.Secondary.DefaultClip = 1
-SWEP.Secondary.Spread = 1.75
+SWEP.Secondary.Spread = 0.175
 SWEP.Secondary.NumberofShots = 20
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Recoil = 3
@@ -57,30 +57,32 @@ function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 end
 
-function SWEP:createBullet(fire)
-	local bullet = {}
-	bullet.Num = fire.NumberofShots
-	bullet.Src = self:GetOwner():GetShootPos()
-	bullet.Dir = self:GetOwner():GetAimVector()
-	bullet.Spread = Vector(fire.Spread * 0.1, fire.Spread * 0.1, 0)
-	bullet.Tracer = 1
-	bullet.TracerName = "ToolTracer"
-	bullet.Force = fire.Force
-	bullet.Damage = fire.Damage
-	bullet.AmmoType = fire.Ammo
-	bullet.Distance = 1e5
-	bullet.RecoilPR = fire.Recoil * -1 --Recoil for Pitch & Roll
-	bullet.recoilY = fire.Recoil * math.random(-1, 1) --Recoil for Yaw
+function SWEP:getBulletProperties(fire)
+	local bulletProperties = {}
+	bulletProperties.Num = fire.NumberofShots
+	bulletProperties.Src = self:GetOwner():GetShootPos()
+	bulletProperties.Dir = self:GetOwner():GetAimVector()
+	bulletProperties.Spread = Vector(fire.Spread, fire.Spread, 0)
+	bulletProperties.Tracer = 1
+	bulletProperties.TracerName = "ToolTracer"
+	bulletProperties.Force = fire.Force
+	bulletProperties.Damage = fire.Damage
+	bulletProperties.AmmoType = fire.Ammo
 
-	return bullet
+	return bulletProperties
 end
 
 function SWEP:attack(fire)
-	local bullet = self:createBullet(fire)
+	local bulletProperties = self:getBulletProperties(fire)
 	self:ShootEffects()
-	self:GetOwner():FireBullets(bullet)
+	self:GetOwner():FireBullets(bulletProperties)
 	self:EmitSound(self.ShootSound)
-	self:GetOwner():ViewPunch(Angle(bullet.RecoilPR, bullet.recoilY, bullet.RecoilPR))
+	
+	local RecoilDirection = math.random(0, 1) --Randomly chooses either left or right for yaw recoil
+	if RecoilDirection == 0 then
+		RecoilDirection = -1
+	end
+	self:GetOwner():ViewPunch(Angle(fire.Recoil, fire.Recoil * RecoilDirection, 0)) --Apply recoil upwards and either left or right (random)
 end
 
 function SWEP:PrimaryAttack()
@@ -99,7 +101,7 @@ function SWEP:SecondaryAttack()
 	self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
 end
 
-if not SERVER then
-	killicon.Add("kilos_combat_toolgun", "vgui/face/grin", Color(255, 255, 255, 255))
-	SWEP.WepSelectIcon = surface.GetTextureID("vgui/gmod_tool")
+if CLIENT then
+	killicon.Add("kilos_combat_toolgun", "vgui/face/grin", Color(255, 255, 255, 255)) --Placeholder
+	SWEP.WepSelectIcon = surface.GetTextureID("vgui/gmod_tool") --Maybe Placeholder (This is the toolgun screwdriver hud icon, might use an image I created that fits with the HL2 theme)
 end
