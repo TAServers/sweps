@@ -57,32 +57,32 @@ function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 end
 
-function SWEP:getBulletProperties(fire)
-	local bulletProperties = {}
-	bulletProperties.Num = fire.NumberofShots
-	bulletProperties.Src = self:GetOwner():GetShootPos()
-	bulletProperties.Dir = self:GetOwner():GetAimVector()
-	bulletProperties.Spread = Vector(fire.Spread, fire.Spread, 0)
-	bulletProperties.Tracer = 1
-	bulletProperties.TracerName = "ToolTracer"
-	bulletProperties.Force = fire.Force
-	bulletProperties.Damage = fire.Damage
-	bulletProperties.AmmoType = fire.Ammo
+function SWEP:getBullet(bulletProperties)
+	local bullet = {}
+	bullet.Num = bulletProperties.NumberofShots
+	bullet.Src = self:GetOwner():GetShootPos()
+	bullet.Dir = self:GetOwner():GetAimVector()
+	bullet.Spread = Vector(bulletProperties.Spread, bulletProperties.Spread, 0)
+	bullet.Tracer = 1
+	bullet.TracerName = "ToolTracer"
+	bullet.Force = bulletProperties.Force
+	bullet.Damage = bulletProperties.Damage
+	bullet.AmmoType = bulletProperties.Ammo
 
-	return bulletProperties
+	return bullet
 end
 
-function SWEP:attack(fire)
-	local bulletProperties = self:getBulletProperties(fire)
+function SWEP:attack(bulletProperties)
+	local bullet = self:getBullet(bulletProperties)
 	self:ShootEffects()
-	self:GetOwner():FireBullets(bulletProperties)
+	self:GetOwner():FireBullets(bullet)
 	self:EmitSound(self.ShootSound)
 	
 	local RecoilDirection = math.random(0, 1) --Randomly chooses either left or right for yaw recoil
 	if RecoilDirection == 0 then
 		RecoilDirection = -1
 	end
-	self:GetOwner():ViewPunch(Angle(fire.Recoil, fire.Recoil * RecoilDirection, 0)) --Apply recoil upwards and either left or right (random)
+	self:GetOwner():ViewPunch(Angle(bulletProperties.Recoil, bulletProperties.Recoil * RecoilDirection, 0)) --Apply recoil upwards and either left or right (random)
 end
 
 function SWEP:PrimaryAttack()
