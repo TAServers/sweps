@@ -1,5 +1,5 @@
 SWEP.PrintName = "Kilo's Combat Tool Gun"
-SWEP.Author = "Kilo"
+SWEP.Author = TASWeapons.Authors[2]
 SWEP.Purpose = "For when circumstances exceed that of the regular tool gun."
 SWEP.Category = TASWeapons.Category
 
