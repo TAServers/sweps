@@ -5,7 +5,7 @@ end
 
 SWEP.PrintName = "Grav Blaster"
 SWEP.Category = TASWeapons.Category
-SWEP.Author = "jason"
+SWEP.Author = "yogwoggf"
 SWEP.Instructions = [[Left click to shoot a burst of gravity which knocks away other players and props.
 Uses combine ball ammunition.
 Strat: Jump and shoot at the ground to propel yourself into the air. You will be hurt though!]]
@@ -162,7 +162,7 @@ function SWEP:FireBurst(position, direction)
 		return
 	end
 
-	table.insert(globalBursts, makeBurst(position, direction, self:GetOwner(), self))
+	globalBursts[makeBurst(position, direction, self:GetOwner(), self)] = false
 end
 
 function SWEP:Initialize()
@@ -222,13 +222,13 @@ function SWEP:SecondaryAttack() end
 
 if SERVER then
 	hook.Add("Think", "tas.grav_blaster_update", function()
-		for index, burst in ipairs(globalBursts) do
+		for burst, _ in pairs(globalBursts) do
 			renderBurst(burst)
 			local burstDied = updateBurst(burst)
 
 			if burstDied then
 				explodeBurst(burst)
-				table.remove(globalBursts, index)
+				globalBursts[burst] = nil
 			end
 		end
 	end)
