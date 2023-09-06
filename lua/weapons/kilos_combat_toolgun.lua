@@ -45,7 +45,7 @@ SWEP.ViewModelFOV = 60
 SWEP.ViewModel = "models/weapons/c_toolgun.mdl"
 SWEP.WorldModel = "models/weapons/w_toolgun.mdl"
 SWEP.UseHands = true
-SWEP.HoldType = "Pistol"
+SWEP.HoldType = "pistol"
 
 SWEP.FiresUnderwater = true
 SWEP.DrawWeaponInfoBox = false
