@@ -51,11 +51,13 @@ local BURST_PASSIVE_RADIUS_UNITS = 120 -- Used for passively pulling objects tow
 local BURST_DAMAGE_HP = 70 -- Scaled by distance from explosion center
 local BURST_TOSS_IMPULSE_MAGNITUDE = 1200 -- arbitrary units
 local BURST_PASSIVE_IMPULSE_MAGNITUDE = 180 -- arbitrary units, scaled down because it's passive
+local BURST_PUNCH_ANGLE = Angle(-3, -0.6, -0.3) -- Determines how strong the punch is on each axis
+local BURST_VIEWMODEL_ANGLE = Angle(0, 0, -15) -- Determines how much the viewmodel is rotated
 
 local globalBursts = {}
 
 local function calculateSpread()
-	return VectorRand() * 0.01
+	return VectorRand(-0.01, 0.01)
 end
 
 local function makeBurst(pos, dir, owner, weapon)
@@ -97,7 +99,7 @@ local function applyGravityToEntity(burst, entity, magnitude)
 		entity:SetVelocity(-tossForce * 0.03)
 	else
 		-- And some random angular velocity for good measure
-		entityPhysics:AddAngleVelocity(VectorRand() * 50)
+		entityPhysics:AddAngleVelocity(VectorRand(-50, 50))
 		entityPhysics:ApplyForceCenter(tossForce)
 	end
 end
@@ -168,7 +170,8 @@ function SWEP:Initialize()
 end
 
 function SWEP:Reload()
-	if self:GetOwner():GetAmmoCount(self.Primary.Ammo) == 0 then
+	local owner = self:GetOwner()
+	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then
 		return
 	end
 
@@ -182,14 +185,14 @@ function SWEP:Reload()
 	-- Wait until the sound has finished playing
 	timer.Simple(self.LoadSoundDurationSecs, function()
 		self.Reloading = false
-		if not IsValid(self) or not IsValid(self:GetOwner()) then
+		if not IsValid(self) or not IsValid(owner) then
 			return
 		end
 
-		local ammo = self:GetOwner():GetAmmoCount(self.Primary.Ammo)
+		local ammo = owner:GetAmmoCount(self.Primary.Ammo)
 
 		self:SetClip1(math.min(ammo, self.Primary.ClipSize))
-		self:GetOwner():RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo)
+		owner:RemoveAmmo(self.Primary.ClipSize, self.Primary.Ammo)
 	end)
 
 	-- 0.1 is arbitrary because apparently SetClip1 doesn't update in the same tick,
@@ -199,7 +202,7 @@ end
 
 function SWEP:CalcViewModelView(_, _, _, newPos, newAng)
 	-- Gangsta wielding
-	return newPos, Angle(0, 0, -15) + newAng
+	return newPos, BURST_VIEWMODEL_ANGLE + newAng
 end
 
 function SWEP:PrimaryAttack()
@@ -211,7 +214,7 @@ function SWEP:PrimaryAttack()
 	self:FireBurst(self:GetOwner():GetShootPos(), self:GetOwner():GetAimVector())
 	self:EmitSound(self.ShootSound)
 	self:TakePrimaryAmmo(1)
-	self:GetOwner():ViewPunch(Angle(-3, -0.6, -0.3))
+	self:GetOwner():ViewPunch(BURST_PUNCH_ANGLE)
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 end
 
