@@ -162,7 +162,7 @@ function SWEP:FireBurst(position, direction)
 		return
 	end
 
-	globalBursts[makeBurst(position, direction, self:GetOwner(), self)] = false
+	globalBursts[makeBurst(position, direction, self:GetOwner(), self)] = true
 end
 
 function SWEP:Initialize()
