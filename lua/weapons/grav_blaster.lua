@@ -45,127 +45,15 @@ SWEP.LoadSoundDurationSecs = 1.5
 
 SWEP.PrimaryRateOfFire = 1.5 -- Per second
 
-local BURST_LIFETIME_SECS = 3
-local BURST_SPEED_UNITS = 140 -- In the direction of the burst each frame
-local BURST_EXPLOSION_RADIUS_UNITS = 290
-local BURST_PASSIVE_RADIUS_UNITS = 120 -- Used for passively pulling objects towards the burst as it's flying
-local BURST_DAMAGE_HP = 70 -- Scaled by distance from explosion center
-local BURST_TOSS_IMPULSE_MAGNITUDE = 42200 -- Hammer units
-local BURST_PASSIVE_IMPULSE_MAGNITUDE = 12180 -- Hammer units, scaled down because it's passive (during flight)
-local BURST_PLAYER_FORCE_MULTIPLIER = 0.5 -- Players weigh ~170lb, 85 kg and this is as about as heavy as a small desk in hl2 which can easily be tossed around. Basically the weight scale in HL2 is weird.
-local BURST_PUNCH_ANGLE = Angle(-3, -0.6, -0.3) -- Determines how strong the punch is on each axis
-local BURST_VIEWMODEL_ANGLE = Angle(0, 0, -15) -- Determines how much the viewmodel is rotated
-
-local globalBursts = {}
-
-local function calculateSpread()
-	return VectorRand(-0.01, 0.01)
-end
-
-local function makeBurst(pos, dir, owner, weapon)
-	return {
-		pos = pos,
-		dir = dir + calculateSpread(),
-		owner = owner,
-		weapon = weapon,
-		timeCreated = CurTime(),
-	}
-end
-
-local function renderBurst(burst)
-	local fx = EffectData()
-	fx:SetOrigin(burst.pos)
-	fx:SetNormal(burst.dir)
-	fx:SetRadius(15)
-
-	util.Effect("RPGShotDown", fx)
-	util.Effect("CommandPointer", fx)
-end
-
-local function applyGravityToEntity(burst, entity, magnitude)
-	if not IsValid(entity) then
-		return
-	end
-
-	local entityPhysics = entity:GetPhysicsObject()
-	if not IsValid(entityPhysics) then
-		return
-	end
-
-	local tossDirection = (entity:GetPos() - burst.pos):GetNormalized()
-	local tossForce = tossDirection * magnitude * entityPhysics:GetMass() * engine.TickInterval()
-	if entity:IsPlayer() then
-		-- Can't use physics methods on a player
-		-- It also acts different with players, toss players away instead of inwards like for props.
-
-		-- In source, this is actually referred to as an impulse like the physics methods, so should be fine.
-		entity:SetVelocity(tossForce * BURST_PLAYER_FORCE_MULTIPLIER)
-	else
-		-- And some random angular velocity for good measure
-		entityPhysics:AddAngleVelocity(VectorRand(-50, 50))
-		entityPhysics:ApplyForceOffset(tossForce, burst.pos)
-	end
-end
-
-local function explodeBurst(burst)
-	if not IsValid(burst.weapon) or not IsValid(burst.owner) then
-		return
-	end
-
-	util.BlastDamage(burst.weapon, burst.owner, burst.pos, BURST_EXPLOSION_RADIUS_UNITS, BURST_DAMAGE_HP)
-	local fx = EffectData()
-	fx:SetOrigin(burst.pos)
-
-	util.Effect("Explosion", fx)
-
-	-- Toss all props inwards and players away in the explosion radius
-	local entities = ents.FindInSphere(burst.pos, BURST_EXPLOSION_RADIUS_UNITS)
-
-	for _, entity in ipairs(entities) do
-		applyGravityToEntity(burst, entity, BURST_TOSS_IMPULSE_MAGNITUDE)
-	end
-end
-
-local function updateBurst(burst)
-	local timeElapsed = CurTime() - burst.timeCreated
-	if timeElapsed > BURST_LIFETIME_SECS then
-		return true
-	end
-
-	-- check if the burst has collided
-	local endPos = burst.pos + burst.dir * BURST_SPEED_UNITS * timeElapsed
-	local trace = util.TraceLine({
-		start = burst.pos,
-		endpos = endPos,
-		filter = {
-			burst.owner,
-		},
-	})
-
-	if trace and trace.Hit then
-		return true
-	end
-
-	local entities = ents.FindInSphere(endPos, BURST_PASSIVE_RADIUS_UNITS)
-	for _, entity in ipairs(entities) do
-		if entity == burst.owner then
-			continue
-		end
-
-		applyGravityToEntity(burst, entity, BURST_PASSIVE_IMPULSE_MAGNITUDE)
-	end
-
-	burst.pos = endPos
-
-	return false
-end
+local PUNCH_ANGLE = Angle(-3, -0.6, -0.3) -- Determines how strong the punch is on each axis
+local VIEWMODEL_ANGLE = Angle(0, 0, -15) -- Determines how much the viewmodel is rotated
 
 function SWEP:FireBurst(position, direction)
 	if CLIENT then
 		return
 	end
 
-	globalBursts[makeBurst(position, direction, self:GetOwner(), self)] = true
+	MakeGravityBurst(position, direction, self:GetOwner(), self)
 end
 
 function SWEP:Initialize()
@@ -205,7 +93,7 @@ end
 
 function SWEP:CalcViewModelView(_, _, _, newPos, newAng)
 	-- Gangsta wielding
-	return newPos, BURST_VIEWMODEL_ANGLE + newAng
+	return newPos, VIEWMODEL_ANGLE + newAng
 end
 
 function SWEP:PrimaryAttack()
@@ -217,22 +105,8 @@ function SWEP:PrimaryAttack()
 	self:FireBurst(self:GetOwner():GetShootPos(), self:GetOwner():GetAimVector())
 	self:EmitSound(self.ShootSound)
 	self:TakePrimaryAmmo(1)
-	self:GetOwner():ViewPunch(BURST_PUNCH_ANGLE)
+	self:GetOwner():ViewPunch(PUNCH_ANGLE)
 	self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 end
 
 function SWEP:SecondaryAttack() end
-
-if SERVER then
-	hook.Add("Think", "tas.grav_blaster_update", function()
-		for burst, _ in pairs(globalBursts) do
-			renderBurst(burst)
-			local burstDied = updateBurst(burst)
-
-			if burstDied then
-				explodeBurst(burst)
-				globalBursts[burst] = nil
-			end
-		end
-	end)
-end
