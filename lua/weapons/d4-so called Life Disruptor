@@ -1,6 +1,3 @@
-if (SERVER) then 
-	resource.AddFile( "materials/d4ico/d4kicon69.png" )
- end
 
 SWEP.PrintName			= "d4v3's so called Life Disruptor"
 SWEP.Author			    = "d4v3" 
@@ -35,8 +32,6 @@ SWEP.Secondary.Automatic = true
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
     if CLIENT then
-    killicon.Add( "weapon_tas_swep", "d4ico69/d4kicon69", color_white )
-    end
 end
 
 	
