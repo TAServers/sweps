@@ -1,0 +1,74 @@
+if (SERVER) then 
+	resource.AddFile( "materials/d4ico/d4kicon69.png" )
+ end
+
+SWEP.PrintName			= "d4v3's so called مُعطل الحياة"
+SWEP.Author			    = "d4v3" 
+SWEP.Instructions		= "LMB TO SHOOT, RMB CREATES SHIELD"
+SWEP.ViewModel = "models/weapons/c_irifle.mdl"
+SWEP.WorldModel = "models/weapons/w_irifle.mdl"
+SWEP.ShootSound = Sound ( "Weapon_AR2.Single" )
+SWEP.Category = TASWeapons.Category
+SWEP.Primary.ClipSize = 25
+SWEP.Primary.DefaultClip = 60
+SWEP.Secondary.ClipSize = 5
+SWEP.Secondary.Ammo = ""
+SWEP.Secondary.DefaultClip = 5
+SWEP.Primary.Ammo = "AR2AltFire"
+SWEP.AdminSpawnable = true
+
+SWEP.Weight			    = 5
+SWEP.AutoSwitchTo		= false
+SWEP.AutoSwitchFrom		= false
+SWEP.Slot			    = 1
+SWEP.SlotPos			= 4
+SWEP.DrawAmmo			= true
+SWEP.DrawCrosshair		= false
+SWEP.Spawnable = true
+SWEP.AdminOnly = false
+SWEP.HoldType = "ar2"
+SWEP.Primary.Automatic = true
+SWEP.UseHands = true
+SWEP.Secondary.Automatic = true
+
+
+function SWEP:Initialize()
+    self:SetHoldType(self.HoldType)
+    if CLIENT then
+    killicon.Add( "weapon_tas_swep", "d4ico69/d4kicon69", color_white )
+    end
+end
+
+	
+
+function SWEP:PrimaryAttack()
+	if not self:CanPrimaryAttack() then
+        return
+    end
+    self:SetNextPrimaryFire(CurTime()+0.1)
+    self:ShootBullet(35,5,0.03)
+    self:EmitSound(self.ShootSound)
+    self:TakePrimaryAmmo(1)
+	end
+
+	function SWEP:SecondaryAttack()
+		if !CLIENT then
+			local ent = ents.Create("prop_physics")
+			ent:SetModel("models/hunter/tubes/tube2x2x2.mdl")
+			ent:SetPos(self.Owner:EyePos()+Vector(0, 0, -19))
+			ent:SetAngles(self.Owner:EyeAngles()+Angle(160, 0, 0))
+			ent:Spawn()
+			ent:SetMaterial("effects/combineshield/comshieldwall")
+			ent:SetCollisionGroup(COLLISION_GROUP_WORLD)
+			ent:SetMoveType(1) 
+		
+			undo.Create ("Shield")
+			undo.AddEntity (ent)
+			undo.Finish()
+			timer.Simple(0.025, function()ent:Remove("Shield") end)
+
+						end
+		
+		end
+		
+		
