@@ -19,7 +19,7 @@ end
 
 SWEP.PrintName = "Junk Cannon"
 SWEP.Category = TASWeapons.Category
-SWEP.Author = TASWeapons.Authors[1]
+SWEP.Author = TASWeapons.Authors.Derpius
 SWEP.Instructions = [[Right click to add small props to your prop hopper
 Left click to fire the oldest one you picked up
 
