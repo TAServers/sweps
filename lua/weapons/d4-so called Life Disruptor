@@ -2,7 +2,7 @@ if (SERVER) then
 	resource.AddFile( "materials/d4ico/d4kicon69.png" )
  end
 
-SWEP.PrintName			= "d4v3's so called مُعطل الحياة"
+SWEP.PrintName			= "d4v3's so called Life Disruptor"
 SWEP.Author			    = "d4v3" 
 SWEP.Instructions		= "LMB TO SHOOT, RMB CREATES SHIELD"
 SWEP.ViewModel = "models/weapons/c_irifle.mdl"
