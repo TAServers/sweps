@@ -1,5 +1,7 @@
 # 🔫 Scripted Weapons
 
+DO NOT MERGE
+
 A monorepo (or well, mono-addon) of custom scripted weapons for the Garry's Mod server.
 Contains weapons made by the community that are too small on their own to be worth turning into an addon.
 
