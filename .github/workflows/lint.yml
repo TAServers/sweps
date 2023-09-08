@@ -6,7 +6,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      GLUAFIXER_VERSION: 1.23.0
+      GLUAFIXER_VERSION: 1.26.0
 
     steps:
       - uses: actions/checkout@v3
