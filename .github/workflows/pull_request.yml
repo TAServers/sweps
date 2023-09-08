@@ -6,4 +6,10 @@ jobs:
   lint:
     uses: "./.github/workflows/lint.yml"
     # Only run on forks to avoid duplicating the "push" workflow
-    if: ${{ github.event.pull_request.base.repo.fork }}
+    # if: ${{ github.event.pull_request.base.repo.fork }}
+
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ github.event.pull_request.base.repo.fork }}
+      - run: echo ${{ github.event.pull_request.head.repo.fork }}
