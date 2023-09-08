@@ -10,8 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - run: ls -la
+        with:
+          fetch-depth: 5
 
       - run: git log
 
