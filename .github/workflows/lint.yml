@@ -11,8 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: git log
-
       - uses: JohnnyMorganz/stylua-action@v2
         with:
           token: ${{ github.token }}
