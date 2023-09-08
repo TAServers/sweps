@@ -12,4 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ github.event.pull_request.base.repo.fork }}
+      - run: echo ${{ github.event.pull_request.base.ref }}
       - run: echo ${{ github.event.pull_request.head.repo.fork }}
+      - run: echo ${{ github.event.pull_request.head.ref }}
