@@ -67,7 +67,7 @@ function SWEP:PrimaryAttack()
     self:SetNextSecondaryFire(CurTime() + 1)
 
     -- Bullet DMG-Bullet count-Spread
-    self:ShootBullet(math.random(10, 25), 10, 0.1)
+    self:ShootBullet(10, 10, 0.1)
 
     -- Emit sound for shooting
     self:EmitSound(self.ShootSound)
@@ -83,7 +83,7 @@ function SWEP:SecondaryAttack()
     self:SetNextPrimaryFire(CurTime() + 1)
     self:SetNextSecondaryFire(CurTime() + 1)
 
-    self:ShootBullet(math.random(25, 50), 30, 0.1)
+    self:ShootBullet(10, 30, 0.1)
     self:EmitSound(self.ShootSound)
 
     self:TakePrimaryAmmo(3)
