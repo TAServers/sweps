@@ -1,5 +1,5 @@
 SWEP.Author = "el_patito_loco"
-SWEP.PrintName = "Experimental Rotating Chamber Sniper"
+SWEP.PrintName = "E.R.C.S" --"Experimental Rotating Chamber Sniper"
 SWEP.Category = TASWeapons.Category
 SWEP.Author = TASWeapons.Authors.El_Patito
 SWEP.Instructions = [[Left Click shoots a powerfull 12.7 mm sniper round that will destroy your enemies!!
