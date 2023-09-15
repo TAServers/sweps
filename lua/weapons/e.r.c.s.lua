@@ -33,13 +33,13 @@ SWEP.WorldModel = "	models/weapons/w_357.mdl"
 
 local ShootSound = Sound("weapons/mortar/mortar_fire1.wav")
 
-SWEP.LoadSound = "weapons/ammopickup.wav"
+--SWEP.LoadSound = "weapons/ammopickup.wav" FOR SECONDARY FIRE
 
 SWEP.Primary.Recoil = 1
 SWEP.Primary.Damage = 75
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Spread = 0
-SWEP.Primary.Cone = 0.25
+--SWEP.Primary.Cone = 0.25 THIS IS FOR FUTURE SCOPE
 SWEP.Primary.Delay = 1
 SWEP.Tracer = 4
 SWEP.Penetration = true
@@ -47,10 +47,6 @@ SWEP.Ricochet = true
 SWEP.MaxRicochet = 100
 --SWEP.Scoped = false
 SWEP.MouseWasDown = true
-
-SWEP.RapidFire = false
-SWEP.RapidFireTimer = 0
-SWEP.RapidFireForce = 1000000
 
 function SWEP:Initialize()
 	self:SetHoldType("revolver")
@@ -67,14 +63,12 @@ function SWEP:PrimaryAttack()
 	Bullet.Tracer = self.Primary.Tracer
 	Bullet.Damage = self.Primary.Damage
 	Bullet.AmmoType = self.Primary.Ammo
-	Bullet.Ricochet = self.Primary.Ricochet
-	Bullet.MaxRicochet = self.Primary.MaxRicochet
 	Bullet.Penetration = self.Primary.Penetration
 
-	local rnda = self.Primary.Recoil * -1
-	local rndb = self.Primary.Recoil * math.random(1, 0)
+	local RecoilMultiplier = self.Primary.Recoil * -1
+	local RecoilRandomMultiplier = self.Primary.Recoil * math.random(0, 1)
 
-	ply:ViewPunch(Angle(rnda, rndb, rnda))
+	ply:ViewPunch(Angle(RecoilMultiplier, RecoilRandomMultiplier, RecoilMultiplier))
 
 	self:DoImpactEffect("GaussTracer")
 	self:FireBullets(Bullet)
