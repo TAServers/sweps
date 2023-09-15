@@ -12,7 +12,7 @@ SWEP.AdminOnly = false
 SWEP.Primary.ClipSize = 10
 SWEP.Primary.DefaultClip = 10
 SWEP.Primary.Automatic = true
-SWEP.Primary.Ammo = "item_ammo_357_large"
+SWEP.Primary.Ammo = "357"
 
 SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
@@ -25,7 +25,7 @@ SWEP.AutoSwitchFrom = false
 
 SWEP.Slot = 4
 SWEP.SlotPos = 3
-SWEP.DrawAmmo = true
+SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
 
 SWEP.ViewModel = "models/weapons/v_357.mdl"
@@ -35,7 +35,7 @@ local ShootSound = Sound("weapons/mortar/mortar_fire1.wav")
 
 SWEP.LoadSound = "weapons/ammopickup.wav"
 
-SWEP.Primary.Recoil = 10
+SWEP.Primary.Recoil = 1
 SWEP.Primary.Damage = 75
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Spread = 0
@@ -45,23 +45,19 @@ SWEP.Tracer = 4
 SWEP.Penetration = true
 SWEP.Ricochet = true
 SWEP.MaxRicochet = 100
-SWEP.Scoped = false
+--SWEP.Scoped = false
 SWEP.MouseWasDown = true
 
 SWEP.RapidFire = false
 SWEP.RapidFireTimer = 0
 SWEP.RapidFireForce = 1000000
 
-SWEP.CannonForce = 50000000
-
 function SWEP:Initialize()
-	self:SetWeaponHoldType("revolver")
+	self:SetHoldType("revolver")
 end
 
 function SWEP:PrimaryAttack()
 	local ply = self:GetOwner()
-
-	ply:LagCompensation(true)
 
 	local Bullet = {}
 	Bullet.Num = self.Primary.NumShots
@@ -75,6 +71,11 @@ function SWEP:PrimaryAttack()
 	Bullet.MaxRicochet = self.Primary.MaxRicochet
 	Bullet.Penetration = self.Primary.Penetration
 
+	local rnda = self.Primary.Recoil * -1
+	local rndb = self.Primary.Recoil * math.random(1, 0)
+
+	ply:ViewPunch(Angle(rnda, rndb, rnda))
+
 	self:DoImpactEffect("GaussTracer")
 	self:FireBullets(Bullet)
 	self:ShootEffects()
@@ -83,7 +84,6 @@ function SWEP:PrimaryAttack()
 	--self:DrawAmmo(1)
 	--self:DrawCrosshair(1)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-	ply:LagCompensation(false)
 end
 
 function SWEP:SecondaryAttack() end
