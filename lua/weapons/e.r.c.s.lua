@@ -42,9 +42,9 @@ SWEP.Primary.Spread = 0
 --SWEP.Primary.Cone = 0.25 THIS IS FOR FUTURE SCOPE
 SWEP.Primary.Delay = 1
 SWEP.Tracer = 4
-SWEP.Penetration = true
-SWEP.Ricochet = true
-SWEP.MaxRicochet = 100
+--SWEP.Penetration = true
+--SWEP.Ricochet = true
+--SWEP.MaxRicochet = 100
 --SWEP.Scoped = false
 SWEP.MouseWasDown = true
 
@@ -63,7 +63,6 @@ function SWEP:PrimaryAttack()
 	Bullet.Tracer = self.Primary.Tracer
 	Bullet.Damage = self.Primary.Damage
 	Bullet.AmmoType = self.Primary.Ammo
-	Bullet.Penetration = self.Primary.Penetration
 
 	local RecoilMultiplier = self.Primary.Recoil * -1
 	local RecoilRandomMultiplier = self.Primary.Recoil * math.random(0, 1)
