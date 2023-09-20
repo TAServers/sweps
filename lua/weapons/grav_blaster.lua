@@ -1,6 +1,5 @@
 if SERVER then
 	resource.AddSingleFile("materials/entities/grav_blaster.png")
-	AddCSLuaFile()
 end
 
 SWEP.PrintName = "Grav Blaster"
@@ -45,8 +44,7 @@ SWEP.LoadSoundDurationSecs = 1.5
 
 SWEP.PrimaryRateOfFire = 1.5 -- Per second
 
-local PUNCH_ANGLE = Angle(-3, -0.6, -0.3) -- Determines how strong the punch is on each axis
-local VIEWMODEL_ANGLE = Angle(0, 0, -15) -- Determines how much the viewmodel is rotated
+local PUNCH_ANGLE = Angle(-3, -1.6, -0.3) -- Determines how strong the punch is on each axis
 
 function SWEP:FireBurst(position, direction)
 	if CLIENT then
@@ -89,11 +87,6 @@ function SWEP:Reload()
 	-- 0.1 is arbitrary because apparently SetClip1 doesn't update in the same tick,
 	-- so the user could reload in the same tick that the reload finished
 	self:SetNextPrimaryFire(CurTime() + self.LoadSoundDurationSecs + 0.1)
-end
-
-function SWEP:CalcViewModelView(_, _, _, newPos, newAng)
-	-- Gangsta wielding
-	return newPos, VIEWMODEL_ANGLE + newAng
 end
 
 function SWEP:PrimaryAttack()
