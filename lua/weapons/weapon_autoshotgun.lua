@@ -1,14 +1,17 @@
+SWEP.PrintName = "Auto Shotgun"
 SWEP.Author = TASWeapons.Authors.yousifgaming
-SWEP.Instructions = "Primary is the same as Secondary fire automatic shotgun"
-SWEP.Purpose = "To play with Dingus"
+SWEP.Instructions = "Gotta Go Faster"
+SWEP.Purpose = "To play with dingus"
 SWEP.Contact = "Don't Contact me i dont like people"
 
-SWEP.PrintName = "Auto Shotgun"
 SWEP.Category = TASWeapons.Category
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
 SWEP.BounceWeaponIcon = false
-SWEP.IconOverride = "materials/autoshotgun/cat.jpg"
+SWEP.IconOverride = "autoshotgun/cat.jpg"
+if CLIENT then
+	SWEP.WepSelectIcon = surface.GetTextureID("autoshotgun/cat")
+end
 
 SWEP.Primary.ClipSize = 30
 SWEP.Primary.DefaultClip = 30
@@ -19,6 +22,7 @@ SWEP.Secondary.Ammo = "None"
 SWEP.Secondary.Automatic = true
 
 SWEP.ReloadInProgress = false
+SWEP.AmmoGiven = false
 
 SWEP.Weight = 5
 SWEP.AutoSwitchTo = false
@@ -31,15 +35,15 @@ SWEP.DrawCrosshair = true
 
 SWEP.ViewModel = "models/weapons/c_shotgun.mdl"
 SWEP.WorldModel = "models/weapons/w_shotgun.mdl"
-SWEP.ShellModel = "models/weapons/shotgun_shell.mdl"
-SWEP.ShellAttachment = "shell"
-
 SWEP.UseHands = true
 
 SWEP.ShootSound = Sound("weapons/xm1014/xm1014-1.wav")
 
-if CLIENT then
-	SWEP.WepSelectIcon = surface.GetTextureID("autoshotgun/cat")
+function SWEP:Deploy()
+	if self.AmmoGiven == false then
+		self:GetOwner():GiveAmmo(26, "Buckshot", true)
+		self.AmmoGiven = true
+	end
 end
 
 function SWEP:Initialize()
@@ -78,11 +82,10 @@ end
 function SWEP:Reload()
 	local ply = self:GetOwner()
 	local roundsToReload = self.Primary.ClipSize - self:Clip1()
-
 	if
 		self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) <= 0
 		or self:Clip1() >= self.Primary.ClipSize
-		or self.ReloadInProgress
+		or self.ReloadInProgress == true
 	then
 		return
 	end
