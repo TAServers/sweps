@@ -39,6 +39,10 @@ SWEP.UseHands = true
 
 SWEP.ShootSound = Sound("weapons/xm1014/xm1014-1.wav")
 
+resource.AddFile("materials/autoshotgun/cat.vmt")
+resource.AddFile("materials/autoshotgun/cat.vtf")
+resource.AddFile("materials/autoshotgun/cat.jpg")
+
 function SWEP:Deploy()
 	if self.AmmoGiven == false then
 		self:GetOwner():GiveAmmo(26, "Buckshot", true)
@@ -85,7 +89,7 @@ function SWEP:Reload()
 	if
 		self:GetOwner():GetAmmoCount(self:GetPrimaryAmmoType()) <= 0
 		or self:Clip1() >= self.Primary.ClipSize
-		or self.ReloadInProgress == true
+		or self.ReloadInProgress
 	then
 		return
 	end
