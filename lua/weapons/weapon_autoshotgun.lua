@@ -39,9 +39,10 @@ SWEP.UseHands = true
 
 SWEP.ShootSound = Sound("weapons/xm1014/xm1014-1.wav")
 
-resource.AddFile("materials/autoshotgun/cat.vmt")
-resource.AddFile("materials/autoshotgun/cat.vtf")
-resource.AddFile("materials/autoshotgun/cat.jpg")
+if SERVER then
+	resource.AddFile("materials/autoshotgun/cat.vmt")
+	resource.AddFile("materials/autoshotgun/cat.jpg")
+end
 
 function SWEP:Deploy()
 	if self.AmmoGiven == false then
