@@ -1,6 +1,6 @@
 SWEP.PrintName = "Shitty Magic Sword"
 SWEP.Author = TASWeapons.Authors.yousifgaming
-SWEP.Instructions = "I am your father"
+SWEP.Instructions = "Left click to attack Right click to leap Reload to heal"
 SWEP.Purpose = "To have fun"
 SWEP.Contact = "Don't Contact me i dont like people"
 
