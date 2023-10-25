@@ -2,12 +2,16 @@ SWEP.Author = "el_patito_loco"
 SWEP.PrintName = "E.R.C.S" --"Experimental Rotating Chamber Sniper"
 SWEP.Category = TASWeapons.Category
 SWEP.Author = TASWeapons.Authors.El_Patito
-SWEP.Instructions = [[Left Click shoots a powerfull 12.7 mm sniper round that will destroy your enemies!!
-At the moments our engineers are working on new features wich will provide more mass destruction!!
+SWEP.Instructions = [[Left Click shoots a powerful 12.7 mm sniper round that will destroy your enemies!!
+At the moment our engineers are working on new features which will provide more mass destruction!!
 ]]
 
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
+
+SWEP.FiresUnderwater = true
+SWEP.DrawWeaponInfoBox = true
+SWEP.IconOverride = "materials/entities/weapon_357.png"
 
 SWEP.Primary.ClipSize = 10
 SWEP.Primary.DefaultClip = 10
@@ -29,7 +33,7 @@ SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
 
 SWEP.ViewModel = "models/weapons/v_357.mdl"
-SWEP.WorldModel = "	models/weapons/w_357.mdl"
+SWEP.WorldModel = "models/weapons/w_357.mdl"
 
 local ShootSound = Sound("weapons/mortar/mortar_fire1.wav")
 
@@ -60,12 +64,13 @@ function SWEP:PrimaryAttack()
 	Bullet.Src = ply:GetShootPos()
 	Bullet.Dir = ply:GetAimVector()
 	Bullet.Spread = Vector(self.Primary.Spread, self.Primary.Spread, 0)
-	Bullet.Tracer = self.Primary.Tracer
+	Bullet.Tracer = 1
+	Bullet.TracerName = "AirboatGunTracer"
 	Bullet.Damage = self.Primary.Damage
 	Bullet.AmmoType = self.Primary.Ammo
 
 	local RecoilMultiplier = self.Primary.Recoil * -1
-	local RecoilRandomMultiplier = self.Primary.Recoil * math.random(0, 1)
+	local RecoilRandomMultiplier = self.Primary.Recoil * math.random(-1, 1)
 
 	ply:ViewPunch(Angle(RecoilMultiplier, RecoilRandomMultiplier, RecoilMultiplier))
 
@@ -77,6 +82,11 @@ function SWEP:PrimaryAttack()
 	--self:DrawAmmo(1)
 	--self:DrawCrosshair(1)
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+end
+
+if CLIENT then --I got thjis from kilo swep hope you don't mind
+	killicon.Add("E_R_C_S", "vgui/face/grin", Color(255, 255, 255, 255))
+	--SWEP.WepSelectIcon = surface.GetTextureID("vgui/gmod_tool")
 end
 
 function SWEP:SecondaryAttack() end
