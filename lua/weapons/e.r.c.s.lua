@@ -2,7 +2,8 @@ SWEP.Author = "el_patito_loco"
 SWEP.PrintName = "e.r.c.s" --"Experimental Rotating Chamber Sniper"
 SWEP.Category = TASWeapons.Category
 SWEP.Author = TASWeapons.Authors.El_Patito
-SWEP.Instructions = [[Left Click shoots a powerful 12.7 mm sniper round that will destroy your enemies!!
+SWEP.Instructions =
+	[[Experimental Rotating Chamber Sniper - Left Click shoots a powerful 12.7 mm sniper round that will destroy your enemies!!
 At the moment our engineers are working on new features which will provide more mass destruction!!
 ]]
 
@@ -14,7 +15,6 @@ SWEP.WorldModel = "models/weapons/w_357.mdl"
 
 local ShootSound = Sound("weapons/mortar/mortar_fire1.wav")
 
-SWEP.FiresUnderwater = true
 SWEP.DrawWeaponInfoBox = true
 SWEP.IconOverride = "materials/entities/weapon_357.png"
 
@@ -48,19 +48,18 @@ SWEP.Primary.Damage = 75
 SWEP.Primary.NumShots = 10
 SWEP.Primary.Spread = 0
 SWEP.Primary.Delay = 1
-SWEP.MouseWasDown = true
 
 function SWEP:Initialize()
 	self:SetHoldType("revolver")
 end
 
 function SWEP:PrimaryAttack()
-	local ply = self:GetOwner()
+	local owner = self:GetOwner()
 
 	local Bullet = {}
 	Bullet.Num = self.Primary.NumShots
-	Bullet.Src = ply:GetShootPos()
-	Bullet.Dir = ply:GetAimVector()
+	Bullet.Src = owner:GetShootPos()
+	Bullet.Dir = owner:GetAimVector()
 	Bullet.Spread = Vector(self.Primary.Spread, self.Primary.Spread, 0)
 	Bullet.Tracer = 1
 	Bullet.TracerName = "AirboatGunTracer"
@@ -68,29 +67,21 @@ function SWEP:PrimaryAttack()
 	Bullet.AmmoType = self.Primary.Ammo
 
 	local RecoilMultiplier = self.Primary.Recoil * -1
-	local RecoilRandomMultiplier = self.Primary.Recoil * math.random(-1, 1)
+	local RecoilRandomMultiplier = self.Primary.Recoil * math.Rand(-1, 1)
 
-	ply:ViewPunch(Angle(RecoilMultiplier, RecoilRandomMultiplier, RecoilMultiplier))
+	owner:ViewPunch(Angle(RecoilMultiplier, RecoilRandomMultiplier, RecoilMultiplier))
 
 	self:DoImpactEffect("GaussTracer")
 	self:FireBullets(Bullet)
 	self:ShootEffects()
 	self:EmitSound(ShootSound)
-	self.BaseClass.ShootEffects(self)
+	self:ShootEffects()
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
 
 if CLIENT then
-	killicon.AddAlias("e.r.c.s", "weapon_357") --Placeholder
-	language.Add("e.r.c.s", "E.R.C.S")
+	killicon.AddAlias("e.r.c.s", "weapon_357") --Gives a killicon
+	language.Add("e.r.c.s", "E.R.C.S") -- Basically makes the killicon work
 end
 
 function SWEP:SecondaryAttack() end
---[[ All of this is seized until further improvment of my lua skills
-function SWEP:DoImpactEffect(GaussTracer,2)
-end
-function SWEP:Reload() end
-function SWEP:scope()
-	self:scope(1)
-end
---]]
