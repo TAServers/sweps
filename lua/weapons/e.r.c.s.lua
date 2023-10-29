@@ -1,5 +1,5 @@
 SWEP.Author = "el_patito_loco"
-SWEP.PrintName = "E.R.C.S" --"Experimental Rotating Chamber Sniper"
+SWEP.PrintName = "e.r.c.s" --"Experimental Rotating Chamber Sniper"
 SWEP.Category = TASWeapons.Category
 SWEP.Author = TASWeapons.Authors.El_Patito
 SWEP.Instructions = [[Left Click shoots a powerful 12.7 mm sniper round that will destroy your enemies!!
@@ -81,7 +81,8 @@ function SWEP:PrimaryAttack()
 end
 
 if CLIENT then
-	killicon.AddFont("blue_shotgun", "HL2MPTypeDeath", "0", Color(0, 0, 255, 255))
+	killicon.AddAlias("e.r.c.s", "weapon_357") --Placeholder
+	language.Add("e.r.c.s", "E.R.C.S")
 end
 
 function SWEP:SecondaryAttack() end
