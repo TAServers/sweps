@@ -81,7 +81,7 @@ end
 
 if CLIENT then
 	killicon.AddAlias("e.r.c.s", "weapon_357") --Gives a killicon
-	language.Add("e.r.c.s", "E.R.C.S") -- Basically makes the killicon work
+	language.Add("e.r.c.s", "E.R.C.S") -- This makes the name of the swep to be displayed in the kill feed.
 end
 
 function SWEP:SecondaryAttack() end
