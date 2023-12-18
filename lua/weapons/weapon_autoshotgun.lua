@@ -10,11 +10,14 @@ SWEP.AdminOnly = false
 SWEP.BounceWeaponIcon = false
 SWEP.IconOverride = "autoshotgun/cat.jpg"
 if CLIENT then
-	SWEP.WepSelectIcon = surface.GetTextureID("autoshotgun/cat")
+	local TextureName = "autoshotgun/cat"
+	SWEP.IconOverride = TextureName
+	SWEP.WepSelectIcon = surface.GetTextureID(TextureName)
+	killicon.Add("weapon_autoshotgun", TextureName, Color(255, 255, 255))
 end
 
 SWEP.Primary.ClipSize = 30
-SWEP.Primary.DefaultClip = 30
+SWEP.Primary.DefaultClip = 56
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "Buckshot"
 
@@ -22,13 +25,12 @@ SWEP.Secondary.Ammo = "None"
 SWEP.Secondary.Automatic = true
 
 SWEP.ReloadInProgress = false
-SWEP.AmmoGiven = false
 
 SWEP.Weight = 5
 SWEP.AutoSwitchTo = false
 SWEP.AutoSwitchFrom = false
 
-SWEP.Slot = 1
+SWEP.Slot = 3
 SWEP.SlotPos = 0
 SWEP.DrawAmmo = true
 SWEP.DrawCrosshair = true
@@ -42,13 +44,6 @@ SWEP.ShootSound = Sound("weapons/xm1014/xm1014-1.wav")
 if SERVER then
 	resource.AddFile("materials/autoshotgun/cat.vmt")
 	resource.AddFile("materials/autoshotgun/cat.jpg")
-end
-
-function SWEP:Deploy()
-	if self.AmmoGiven == false then
-		self:GetOwner():GiveAmmo(26, "Buckshot", true)
-		self.AmmoGiven = true
-	end
 end
 
 function SWEP:Initialize()
@@ -71,7 +66,9 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-	if not self:CanPrimaryAttack() or self:Clip1() < 3 then
+	if self:Clip1() < 3 then
+		self:SetNextSecondaryFire(CurTime() + 0.3)
+		self:Reload()
 		return
 	end
 
