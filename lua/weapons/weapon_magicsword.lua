@@ -1,11 +1,11 @@
 SWEP.PrintName = "Magic Sword"
-SWEP.Author = "yousifgaming"
+SWEP.Author = TASWeapons.Authors.yousifgaming
 SWEP.Instructions =
 	"Left click to attack | Right click to leap | Reload to heal | While holding the sword you don't take fall damage"
 SWEP.Purpose = "To Become a cool swordsman that can fly"
 SWEP.Contact = "Don't Contact me i dont like people"
 
-SWEP.Category = "yousifgaming's Weapons"
+SWEP.Category = TASWeapons.Category
 SWEP.Spawnable = true
 SWEP.AdminOnly = false
 SWEP.BounceWeaponIcon = false
